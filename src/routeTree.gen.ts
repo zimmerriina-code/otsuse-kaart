@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TulemusRouteImport } from './routes/tulemus'
 import { Route as PrivaatsusRouteImport } from './routes/privaatsus'
 import { Route as KaardistaRouteImport } from './routes/kaardista'
 import { Route as AbiRouteImport } from './routes/abi'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TulemusRoute = TulemusRouteImport.update({
+  id: '/tulemus',
+  path: '/tulemus',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivaatsusRoute = PrivaatsusRouteImport.update({
   id: '/privaatsus',
   path: '/privaatsus',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/abi': typeof AbiRoute
   '/kaardista': typeof KaardistaRoute
   '/privaatsus': typeof PrivaatsusRoute
+  '/tulemus': typeof TulemusRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/abi': typeof AbiRoute
   '/kaardista': typeof KaardistaRoute
   '/privaatsus': typeof PrivaatsusRoute
+  '/tulemus': typeof TulemusRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/abi': typeof AbiRoute
   '/kaardista': typeof KaardistaRoute
   '/privaatsus': typeof PrivaatsusRoute
+  '/tulemus': typeof TulemusRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/abi' | '/kaardista' | '/privaatsus'
+  fullPaths: '/' | '/abi' | '/kaardista' | '/privaatsus' | '/tulemus'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/abi' | '/kaardista' | '/privaatsus'
-  id: '__root__' | '/' | '/abi' | '/kaardista' | '/privaatsus'
+  to: '/' | '/abi' | '/kaardista' | '/privaatsus' | '/tulemus'
+  id: '__root__' | '/' | '/abi' | '/kaardista' | '/privaatsus' | '/tulemus'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +76,18 @@ export interface RootRouteChildren {
   AbiRoute: typeof AbiRoute
   KaardistaRoute: typeof KaardistaRoute
   PrivaatsusRoute: typeof PrivaatsusRoute
+  TulemusRoute: typeof TulemusRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tulemus': {
+      id: '/tulemus'
+      path: '/tulemus'
+      fullPath: '/tulemus'
+      preLoaderRoute: typeof TulemusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privaatsus': {
       id: '/privaatsus'
       path: '/privaatsus'
@@ -107,7 +124,18 @@ const rootRouteChildren: RootRouteChildren = {
   AbiRoute: AbiRoute,
   KaardistaRoute: KaardistaRoute,
   PrivaatsusRoute: PrivaatsusRoute,
+  TulemusRoute: TulemusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
