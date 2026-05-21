@@ -14,27 +14,23 @@ import { Footer } from "../components/Footer";
 
 function NotFoundComponent() {
   return (
-    <>
-      <Nav />
-      <main className="flex min-h-[60vh] items-center justify-center bg-background px-4">
-        <div className="max-w-md text-center">
-          <h1 className="font-serif text-6xl font-semibold text-navy">404</h1>
-          <h2 className="mt-4 text-xl font-medium text-navy">Lehte ei leitud</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Otsitud lehte ei eksisteeri või on see liigutatud.
-          </p>
-          <div className="mt-6">
-            <Link
-              to="/"
-              className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90"
-            >
-              Tagasi avalehele
-            </Link>
-          </div>
+    <main className="flex min-h-[60vh] items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="font-serif text-6xl font-semibold text-navy">404</h1>
+        <h2 className="mt-4 text-xl font-medium text-navy">Lehte ei leitud</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Otsitud lehte ei eksisteeri või on see liigutatud.
+        </p>
+        <div className="mt-6">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90"
+          >
+            Tagasi avalehele
+          </Link>
         </div>
-      </main>
-      <Footer />
-    </>
+      </div>
+    </main>
   );
 }
 
@@ -42,29 +38,25 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   return (
-    <>
-      <Nav />
-      <main className="flex min-h-[60vh] items-center justify-center bg-background px-4">
-        <div className="max-w-md text-center">
-          <h1 className="font-serif text-2xl font-semibold text-navy">Midagi läks valesti</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Proovi lehte uuesti laadida või mine tagasi avalehele.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
-            <button
-              onClick={() => { router.invalidate(); reset(); }}
-              className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
-            >
-              Proovi uuesti
-            </button>
-            <a href="/" className="rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-accent/30">
-              Avalehele
-            </a>
-          </div>
+    <main className="flex min-h-[60vh] items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="font-serif text-2xl font-semibold text-navy">Midagi läks valesti</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Proovi lehte uuesti laadida või mine tagasi avalehele.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <button
+            onClick={() => { router.invalidate(); reset(); }}
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
+          >
+            Proovi uuesti
+          </button>
+          <a href="/" className="rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-accent/30">
+            Avalehele
+          </a>
         </div>
-      </main>
-      <Footer />
-    </>
+      </div>
+    </main>
   );
 }
 
