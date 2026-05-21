@@ -37,9 +37,8 @@ export function Nav() {
       {open && (
         <div className="sm:hidden border-t border-border/60 bg-background">
           <nav className="mx-auto flex max-w-6xl flex-col px-5 py-3 text-sm">
-            <Link to="/abi" className="py-2.5 text-foreground" onClick={() => setOpen(false)}>Kuidas see toimib?</Link>
-            <Link to="/privaatsus" className="py-2.5 text-foreground" onClick={() => setOpen(false)}>Privaatsus</Link>
             <Link to="/abi" className="py-2.5 text-foreground" onClick={() => setOpen(false)}>Abi</Link>
+            <Link to="/privaatsus" className="py-2.5 text-foreground" onClick={() => setOpen(false)}>Privaatsus</Link>
           </nav>
         </div>
       )}
