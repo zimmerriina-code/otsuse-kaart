@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { clearData, loadData, type DecisionData } from "../lib/decision-store";
 import { buildInterpretation } from "../lib/interpretation";
 import { buildMapItems, DecisionMap } from "../components/DecisionMap";
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/tulemus")({
 
 function Result() {
   const [data, setData] = useState<DecisionData | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setData(loadData());
@@ -55,6 +57,11 @@ function Result() {
 
   const onDownload = () => {
     if (interp) generatePdf(data, interp);
+  };
+
+  const onRestart = () => {
+    clearData();
+    navigate({ to: "/kaardista" });
   };
 
   return (
