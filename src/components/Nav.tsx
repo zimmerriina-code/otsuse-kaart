@@ -16,13 +16,10 @@ export function Nav() {
 
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground sm:flex">
           <Link to="/abi" className="hover:text-navy transition-colors" activeProps={{ className: "text-navy" }}>
-            Kuidas see toimib?
+            Abi
           </Link>
           <Link to="/privaatsus" className="hover:text-navy transition-colors" activeProps={{ className: "text-navy" }}>
             Privaatsus
-          </Link>
-          <Link to="/abi" className="hover:text-navy transition-colors">
-            Abi
           </Link>
         </nav>
 
