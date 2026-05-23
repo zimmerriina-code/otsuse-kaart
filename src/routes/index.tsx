@@ -9,7 +9,6 @@ function Home() {
   const scrollToExplain = () => {
     document.getElementById("selgitus")?.scrollIntoView({ behavior: "smooth" });
   };
-  void scrollToExplain;
 
   return (
     <>
