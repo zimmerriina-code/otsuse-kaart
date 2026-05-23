@@ -441,9 +441,9 @@ export function DecisionMap({
 }
 
 function PillButton({
-  x, y, label, dashed, hovered, onEnter, onLeave, onClick,
+  x, y, label, dashed, hovered, delay = 0, onEnter, onLeave, onClick,
 }: {
-  x: number; y: number; label: string; dashed: boolean; hovered: boolean;
+  x: number; y: number; label: string; dashed: boolean; hovered: boolean; delay?: number;
   onEnter: () => void; onLeave: () => void; onClick: () => void;
 }) {
   const text = clip(label, 22);
@@ -453,28 +453,54 @@ function PillButton({
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       onClick={onClick}
-      className="cursor-pointer"
-      style={{
-        transformOrigin: `${x}px ${y}px`,
-        transform: hovered ? "scale(1.05)" : "scale(1)",
-        transition: "transform 220ms ease",
-      }}
+      className="cursor-pointer animate-float-soft"
+      style={{ animationDelay: `${delay}s`, transformBox: "fill-box", transformOrigin: "center" }}
     >
-      <rect
-        x={x - width / 2}
-        y={y - 20}
-        width={width}
-        height={40}
-        rx={20}
-        fill="oklch(1 0 0)"
-        stroke="oklch(0.62 0.11 290)"
-        strokeWidth="1"
-        strokeDasharray={dashed ? "4 4" : undefined}
-        opacity={hovered ? 1 : 0.94}
-      />
-      <text x={x} y={y + 5} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 500, fill: "oklch(0.27 0.07 275)" }}>
-        {text}
-      </text>
+      <g
+        style={{
+          transformOrigin: `${x}px ${y}px`,
+          transform: hovered ? "scale(1.07)" : "scale(1)",
+          transition: "transform 300ms cubic-bezier(.2,.7,.2,1)",
+        }}
+      >
+        {hovered && (
+          <rect
+            x={x - width / 2 - 8}
+            y={y - 28}
+            width={width + 16}
+            height={56}
+            rx={28}
+            fill="oklch(0.7 0.13 290)"
+            opacity="0.18"
+          />
+        )}
+        <rect
+          x={x - width / 2}
+          y={y - 20}
+          width={width}
+          height={40}
+          rx={20}
+          fill="oklch(1 0 0)"
+          stroke={hovered ? "oklch(0.45 0.13 285)" : "oklch(0.62 0.11 290)"}
+          strokeWidth={hovered ? 1.6 : 1}
+          strokeDasharray={dashed ? "4 4" : undefined}
+          opacity={hovered ? 1 : 0.94}
+          style={{ transition: "stroke-width 200ms ease" }}
+        />
+        <text
+          x={x}
+          y={y + 5}
+          textAnchor="middle"
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontSize: 13,
+            fontWeight: hovered ? 600 : 500,
+            fill: "oklch(0.27 0.07 275)",
+          }}
+        >
+          {text}
+        </text>
+      </g>
     </g>
   );
 }
