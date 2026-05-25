@@ -13,42 +13,42 @@ function Home() {
   return (
     <>
       {/* Hero — fills first viewport, calm and centered */}
-      <section className="relative flex min-h-[calc(100svh-65px)] items-center overflow-hidden">
-        <div className="relative z-10">
-          <FlowingLines className="absolute inset-0 z-0 h-full w-full pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/30 to-background" />
-        </div>
+<section className="relative flex min-h-[calc(100svh-65px)] items-center justify-center overflow-hidden bg-background">
+  <FlowingLines className="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-100" />
+  <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-transparent via-background/10 to-background" />
 
-        <div className="mx-auto w-full max-w-2xl px-5 py-16 text-center sm:px-8 sm:py-24">
-          <h1 className="font-serif text-[2.5rem] leading-[1.08] font-semibold tracking-tight text-navy text-balance sm:text-6xl">
-            Sa ei pea kohe teadma vastust.
-          </h1>
-          <p className="mx-auto mt-7 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Otsuse kaart aitab sul lahti mõtestada suure või segase otsuse eri tahud
-            ja näha selgemalt, mis seda mõjutab.
-          </p>
+  <div className="relative z-10 mx-auto w-full max-w-2xl px-5 py-16 text-center sm:px-8 sm:py-24">
+    <h1 className="font-serif text-[2.5rem] leading-[1.08] font-semibold tracking-tight text-navy text-balance sm:text-6xl">
+      Sa ei pea kohe teadma vastust.
+    </h1>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-            <Link
-              to="/kaardista"
-              className="inline-flex w-full items-center justify-center rounded-full bg-violet-deep px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90 sm:w-auto"
-            >
-              Kaardista oma mõte
-            </Link>
-            <button
-              onClick={scrollToExplain}
-              className="inline-flex w-full items-center justify-center rounded-full border border-border bg-card/80 px-7 py-3.5 text-sm font-medium text-navy backdrop-blur-sm transition hover:bg-accent/30 sm:w-auto"
-            >
-              Uuri lähemalt
-            </button>
-          </div>
+    <p className="mx-auto mt-7 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+      Otsuse kaart aitab sul lahti mõtestada suure või segase otsuse eri tahud
+      ja näha selgemalt, mis seda mõjutab.
+    </p>
 
-          <p className="mt-6 text-xs text-muted-foreground">
-            Võtab umbes 5–7 minutit. Vastuseid ei salvestata.
-          </p>
-        </div>
-      </section>
+    <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+      <Link
+        to="/kaardista"
+        className="inline-flex w-full items-center justify-center rounded-full bg-violet-deep px-7 py-3.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90 sm:w-auto"
+      >
+        Kaardista oma mõte
+      </Link>
 
+      <button
+        onClick={scrollToExplain}
+        className="inline-flex w-full items-center justify-center rounded-full border border-border bg-card/80 px-7 py-3.5 text-sm font-medium text-navy backdrop-blur-sm transition hover:bg-accent/30 sm:w-auto"
+      >
+        Uuri lähemalt
+      </button>
+    </div>
+
+    <p className="mt-6 text-xs text-muted-foreground">
+      Võtab umbes 5–7 minutit. Vastuseid ei salvestata.
+    </p>
+  </div>
+</section>
+      
       {/* Explanation */}
       <section id="selgitus" className="relative">
         <div className="mx-auto max-w-4xl px-5 py-20 sm:px-8 sm:py-28">
