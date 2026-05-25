@@ -30,14 +30,16 @@ export function FlowingLines({ className }: Props) {
         opacity="0.8"
       />
 
-      <path
-        d="M 0 360 C 220 250, 360 470, 620 360 S 980 250, 1600 360"
-        stroke="#9B8CF0"
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.7"
-      />
-    </svg>
+      return (
+  <path
+    d={d}
+    stroke="#5B50D6"
+    strokeWidth={l.w * 1.8}
+    strokeLinecap="round"
+    fill="none"
+    opacity={0.65}
+    className="animate-breathe"
+    style={{ animationDuration: `${8 + (l.phase % 3) * 2}s` }}
+  />
   );
 }
