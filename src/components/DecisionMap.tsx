@@ -452,7 +452,7 @@ export function DecisionMap({
 }
 
 function PillButton({
-  x, y, label, dashed, hovered, delay = 0, onEnter, onLeave, onClick,
+  x, y, label, dashed, hovered, onEnter, onLeave, onClick,
 }: {
   x: number; y: number; label: string; dashed: boolean; hovered: boolean; delay?: number;
   onEnter: () => void; onLeave: () => void; onClick: () => void;
