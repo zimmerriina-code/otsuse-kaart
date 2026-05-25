@@ -99,15 +99,12 @@ function SinePath({
     d += ` Q ${cx} ${p0.y}, ${cx} ${(p0.y + p1.y) / 2} T ${p1.x} ${p1.y}`;
   }
   return (
-   <path
-  d={d}
-  stroke="#4F46E5"
-  strokeWidth={3}
-  strokeLinecap="round"
-  fill="none"
-  opacity={1}
-  className="animate-breathe"
-  style={{ animationDuration: `${8 + (l.phase % 3) * 2}s` }}
-/>
-  );
+ <path
+    d={d}
+    stroke="#4F46E5"
+    strokeWidth={4}
+    strokeLinecap="round"
+    fill="none"
+    opacity={1}
+  />
 }
