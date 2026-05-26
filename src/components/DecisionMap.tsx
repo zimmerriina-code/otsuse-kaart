@@ -27,10 +27,10 @@ interface Props {
   onSelect?: (it: MapItem) => void;
 }
 
-const W = 1520;
-const H = 940;
-const CX = 760;
-const CY = 470;
+const W = 1800;
+const H = 1150;
+const CX = 900;
+const CY = 560;
 
 export function DecisionMap({
   centerText,
@@ -100,16 +100,16 @@ export function DecisionMap({
   const arr = byType.motivation.slice(0, 4);
 
   const positions = [
-    { x: CX - 690, y: CY - 310 }, // üleval vasakul
-    { x: CX - 760, y: CY - 70 },  // keskelt vasakul
-    { x: CX - 650, y: CY + 300 }, // all vasakul
-    { x: CX - 760, y: CY + 130 }, // lisakoht
+    { x: CX - 640, y: CY - 390 },
+    { x: CX - 760, y: CY - 150 },
+    { x: CX - 650, y: CY + 390 },
+    { x: CX - 820, y: CY + 120 },
   ];
 
   return arr.map((it, i) => ({
     ...it,
-    x: positions[i]?.x ?? CX - 720,
-    y: positions[i]?.y ?? CY - 260 + i * 150,
+    x: positions[i]?.x ?? CX - 700,
+    y: positions[i]?.y ?? CY - 330 + i * 220,
   }));
 }, [byType]);
 
@@ -117,10 +117,10 @@ const rightPills = useMemo(() => {
   const arr = byType.fear.slice(0, 4);
 
   const positions = [
-    { x: CX + 700, y: CY - 300 }, // üleval paremal
-    { x: CX + 780, y: CY - 40 },  // keskelt paremal
-    { x: CX + 670, y: CY + 300 }, // all paremal
-    { x: CX + 780, y: CY + 130 }, // lisakoht
+    { x: CX + 640, y: CY - 390 }, 
+    { x: CX + 790, y: CY - 130 },  
+    { x: CX + 640, y: CY + 390 }, 
+    { x: CX + 820, y: CY + 120 },
   ];
 
   return arr.map((it, i) => ({
@@ -219,46 +219,62 @@ const rightPills = useMemo(() => {
 
           {/* Left pill connections — soft flowing curve */}
           {leftPills.map((it) => {
-            const isHover = hovered === it.id;
-            return (
-              <path
-                key={"ll-" + it.id}
-                d={`M 220 ${it.y} C 360 ${it.y}, ${CX - 320} ${CY + (it.y - CY) * 0.3}, ${CX - 220} ${CY + (it.y - CY) * 0.18}`}
-                stroke="oklch(0.55 0.13 285)"
-                strokeWidth={isHover ? 1.9 : 1.1}
-                strokeLinecap="round"
-                fill="none"
-                opacity={hovered === null ? 0.42 : isHover ? 0.95 : 0.1}
-                className="animate-line-breathe transition-all duration-500"
-                style={{ animationDelay: `${(it.y % 6) * 0.3}s` }}
-              />
-            );
-          })}
+  const isHover = hovered === it.id;
+
+  const startX = CX - 250;
+  const startY = CY + (it.y - CY) * 0.22;
+
+  const endX = it.x + 115;
+  const endY = it.y;
+
+  const c1x = startX - 160;
+  const c1y = startY + (endY - startY) * 0.25;
+
+  const c2x = endX + 120;
+  const c2y = endY;
+
+  return (
+    <path
+      key={"ll-" + it.id}
+      d={`M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`}
+      stroke="oklch(0.55 0.13 285)"
+      strokeWidth={isHover ? 2.2 : 1.4}
+      strokeLinecap="round"
+      fill="none"
+      opacity={hovered === null ? 0.45 : isHover ? 0.95 : 0.14}
+      className="animate-line-breathe transition-all duration-500"
+    />
+  );
+})}
           {/* Right pill connections — slightly tangled wave (no dashes) */}
           {rightPills.map((it) => {
-            const isHover = hovered === it.id;
-            const y = it.y;
-            const startX = W - 220;
-            const endX = CX + 220;
-            const midX1 = startX - 70;
-            const midX2 = startX - 180;
-            // small irregular bend on this curve to suggest a soft "obstacle"
-            const bend = (y % 60) - 30;
-            return (
-              <path
-                key={"rl-" + it.id}
-                d={`M ${startX} ${y} C ${midX1} ${y + bend}, ${midX2} ${y - bend * 0.6}, ${endX} ${CY + (y - CY) * 0.18}`}
-                stroke="oklch(0.55 0.13 285)"
-                strokeWidth={isHover ? 1.9 : 1.1}
-                strokeLinecap="round"
-                fill="none"
-                opacity={hovered === null ? 0.45 : isHover ? 0.95 : 0.12}
-                className="animate-line-breathe transition-all duration-500"
-                style={{ animationDelay: `${(y % 5) * 0.35}s` }}
-              />
-            );
-          })}
+  const isHover = hovered === it.id;
 
+  const startX = CX + 250;
+  const startY = CY + (it.y - CY) * 0.22;
+
+  const endX = it.x - 115;
+  const endY = it.y;
+
+  const c1x = startX + 160;
+  const c1y = startY + (endY - startY) * 0.25;
+
+  const c2x = endX - 120;
+  const c2y = endY;
+
+  return (
+    <path
+      key={"rl-" + it.id}
+      d={`M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`}
+      stroke="oklch(0.55 0.13 285)"
+      strokeWidth={isHover ? 2.2 : 1.4}
+      strokeLinecap="round"
+      fill="none"
+      opacity={hovered === null ? 0.45 : isHover ? 0.95 : 0.14}
+      className="animate-line-breathe transition-all duration-500"
+    />
+  );
+})}
           {/* Main influence bubbles — shapes drift/breathe, text stays static */}
           {mains.map((it, idx) => {
             const grad = idx === 0 ? "url(#bubble-purple)" : idx === 1 ? "url(#bubble-lavender)" : "url(#bubble-blue)";
