@@ -633,29 +633,35 @@ function clip(s: string, n: number) {
 function wrapLabel(s: string, maxChars: number, maxLines = 2): string[] {
   if (!s) return [""];
   const words = s.trim().split(/\s+/);
+  if (words.length === 1) return [clip(words[0], maxChars + 4)];
   const lines: string[] = [];
   let cur = "";
-  for (const w of words) {
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
     const candidate = cur ? cur + " " + w : w;
     if (candidate.length <= maxChars || !cur) {
       cur = candidate;
     } else {
       lines.push(cur);
       cur = w;
-      if (lines.length === maxLines - 1) break;
+      if (lines.length === maxLines) {
+        // overflow into last line + ellipsis with the rest joined
+        const rest = words.slice(i).join(" ");
+        let last = lines[lines.length - 1];
+        if ((last + " " + rest).length > maxChars + 3) {
+          last = clip(last + " " + rest, maxChars + 3);
+        } else {
+          last = last + " " + rest;
+        }
+        lines[lines.length - 1] = last;
+        return lines;
+      }
     }
   }
-  // remaining words
-  const rest = words.slice(lines.join(" ").split(/\s+/).filter(Boolean).length).join(" ");
-  if (lines.length < maxLines) {
-    lines.push((cur && rest && !rest.startsWith(cur) ? rest : cur).trim());
-  } else if (rest) {
-    let last = lines[lines.length - 1] + " " + rest;
-    if (last.length > maxChars + 2) last = last.slice(0, maxChars + 1).trim() + "…";
-    lines[lines.length - 1] = last;
-  }
-  return lines.filter(Boolean);
+  if (cur) lines.push(cur);
+  return lines;
 }
+
 
 // Scale center decision text down for long sentences.
 function centerFontSize(s: string): number {
