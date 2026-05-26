@@ -27,10 +27,10 @@ interface Props {
   onSelect?: (it: MapItem) => void;
 }
 
-const W = 1120;
-const H = 760;
-const CX = 560;
-const CY = 360;
+const W = 1280;
+const H = 880;
+const CX = 640;
+const CY = 430;
 
 export function DecisionMap({
   centerText,
@@ -52,27 +52,28 @@ export function DecisionMap({
   }, [items]);
 
   // Main influence bubbles: top 2 values + top 1 affected, placed around the center.
+  // Larger radii, pushed further from center; most important bubble is the largest.
   const mains = useMemo(() => {
     const arr = [...byType.value.slice(0, 2), ...byType.affected.slice(0, 1)];
     const positions = [
-      { x: CX - 320, y: CY - 130 }, // top-left
-      { x: CX - 290, y: CY + 170 }, // bottom-left
-      { x: CX + 330, y: CY - 40 },  // right
+      { x: CX - 430, y: CY - 210, r: 108 }, // top-left — biggest (most important)
+      { x: CX - 400, y: CY + 220, r: 94 },  // bottom-left
+      { x: CX + 440, y: CY - 30, r: 100 },  // right
     ];
     return arr.slice(0, 3).map((it, i) => ({
       ...it,
       x: positions[i].x,
       y: positions[i].y,
-      r: 76,
+      r: positions[i].r,
       strength: it.importance >= 0.95 ? "väga oluline" : it.importance >= 0.78 ? "oluline" : "puudutab",
     }));
   }, [byType]);
 
-  // Left column: motivations. Right column: fears (dashed).
+  // Left column: motivations. Right column: fears (flowing, not dashed).
   const colPositions = (n: number) => {
     if (n === 0) return [];
-    const startY = 200;
-    const endY = 580;
+    const startY = 230;
+    const endY = 720;
     if (n === 1) return [(startY + endY) / 2];
     const gap = (endY - startY) / (n - 1);
     return Array.from({ length: n }, (_, i) => startY + i * gap);
@@ -81,13 +82,13 @@ export function DecisionMap({
   const leftPills = useMemo(() => {
     const arr = byType.motivation.slice(0, 4);
     const ys = colPositions(arr.length);
-    return arr.map((it, i) => ({ ...it, x: 120, y: ys[i] }));
+    return arr.map((it, i) => ({ ...it, x: 140, y: ys[i] }));
   }, [byType]);
 
   const rightPills = useMemo(() => {
     const arr = byType.fear.slice(0, 4);
     const ys = colPositions(arr.length);
-    return arr.map((it, i) => ({ ...it, x: W - 120, y: ys[i] }));
+    return arr.map((it, i) => ({ ...it, x: W - 140, y: ys[i] }));
   }, [byType]);
 
   const handleClick = (it: MapItem) => {
