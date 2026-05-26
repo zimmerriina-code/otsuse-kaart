@@ -27,10 +27,10 @@ interface Props {
   onSelect?: (it: MapItem) => void;
 }
 
-const W = 1120;
-const H = 760;
-const CX = 560;
-const CY = 360;
+const W = 1280;
+const H = 880;
+const CX = 640;
+const CY = 430;
 
 export function DecisionMap({
   centerText,
@@ -52,27 +52,28 @@ export function DecisionMap({
   }, [items]);
 
   // Main influence bubbles: top 2 values + top 1 affected, placed around the center.
+  // Larger radii, pushed further from center; most important bubble is the largest.
   const mains = useMemo(() => {
     const arr = [...byType.value.slice(0, 2), ...byType.affected.slice(0, 1)];
     const positions = [
-      { x: CX - 320, y: CY - 130 }, // top-left
-      { x: CX - 290, y: CY + 170 }, // bottom-left
-      { x: CX + 330, y: CY - 40 },  // right
+      { x: CX - 430, y: CY - 210, r: 108 }, // top-left — biggest (most important)
+      { x: CX - 400, y: CY + 220, r: 94 },  // bottom-left
+      { x: CX + 440, y: CY - 30, r: 100 },  // right
     ];
     return arr.slice(0, 3).map((it, i) => ({
       ...it,
       x: positions[i].x,
       y: positions[i].y,
-      r: 76,
+      r: positions[i].r,
       strength: it.importance >= 0.95 ? "väga oluline" : it.importance >= 0.78 ? "oluline" : "puudutab",
     }));
   }, [byType]);
 
-  // Left column: motivations. Right column: fears (dashed).
+  // Left column: motivations. Right column: fears (flowing, not dashed).
   const colPositions = (n: number) => {
     if (n === 0) return [];
-    const startY = 200;
-    const endY = 580;
+    const startY = 230;
+    const endY = 720;
     if (n === 1) return [(startY + endY) / 2];
     const gap = (endY - startY) / (n - 1);
     return Array.from({ length: n }, (_, i) => startY + i * gap);
@@ -81,13 +82,13 @@ export function DecisionMap({
   const leftPills = useMemo(() => {
     const arr = byType.motivation.slice(0, 4);
     const ys = colPositions(arr.length);
-    return arr.map((it, i) => ({ ...it, x: 120, y: ys[i] }));
+    return arr.map((it, i) => ({ ...it, x: 140, y: ys[i] }));
   }, [byType]);
 
   const rightPills = useMemo(() => {
     const arr = byType.fear.slice(0, 4);
     const ys = colPositions(arr.length);
-    return arr.map((it, i) => ({ ...it, x: W - 120, y: ys[i] }));
+    return arr.map((it, i) => ({ ...it, x: W - 140, y: ys[i] }));
   }, [byType]);
 
   const handleClick = (it: MapItem) => {
@@ -144,19 +145,19 @@ export function DecisionMap({
             </filter>
           </defs>
 
-          {/* Halo behind center — breathing aura */}
-          <ellipse cx={CX} cy={CY} rx={300} ry={180} fill="url(#halo)" className="animate-breathe-slow" />
+          {/* Halo behind center — breathing aura, larger */}
+          <ellipse cx={CX} cy={CY} rx={360} ry={220} fill="url(#halo)" className="animate-breathe-slow" />
 
           {/* Section headers */}
           {leftPills.length > 0 && (
-            <text x={120} y={150} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, fill: "oklch(0.5 0.05 285)", letterSpacing: 1.8 }}>
+            <text x={140} y={165} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 600, fill: "oklch(0.5 0.05 285)", letterSpacing: 2 }}>
               MIS TÕMBAB
             </text>
           )}
           {rightPills.length > 0 && (
             <g>
-              <rect x={W - 188} y={134} width={136} height={26} rx={13} fill="oklch(0.96 0.012 290)" stroke="oklch(0.78 0.07 285)" strokeWidth="0.9" />
-              <text x={W - 120} y={152} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 500, fill: "oklch(0.45 0.13 285)" }}>
+              <rect x={W - 210} y={148} width={140} height={28} rx={14} fill="oklch(0.96 0.012 290)" stroke="oklch(0.78 0.07 285)" strokeWidth="0.9" />
+              <text x={W - 140} y={167} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 500, fill: "oklch(0.45 0.13 285)" }}>
                 võimalikud riskid
               </text>
             </g>
@@ -169,10 +170,10 @@ export function DecisionMap({
             const dist = Math.sqrt(dx * dx + dy * dy);
             const ux = dx / dist;
             const uy = dy / dist;
-            const x1 = CX + ux * 140;
-            const y1 = CY + uy * 80;
-            const x2 = it.x - ux * (it.r + 4);
-            const y2 = it.y - uy * (it.r + 4);
+            const x1 = CX + ux * 200;
+            const y1 = CY + uy * 120;
+            const x2 = it.x - ux * (it.r + 6);
+            const y2 = it.y - uy * (it.r + 6);
             const mx = (x1 + x2) / 2;
             const my = (y1 + y2) / 2;
             const isHover = hovered === it.id;
@@ -180,17 +181,18 @@ export function DecisionMap({
             return (
               <g key={"ml-" + it.id}>
                 <path
-                  d={`M ${x1} ${y1} Q ${mx + uy * 14} ${my - ux * 14}, ${x2} ${y2}`}
+                  d={`M ${x1} ${y1} Q ${mx + uy * 22} ${my - ux * 22}, ${x2} ${y2}`}
                   stroke="oklch(0.55 0.13 285)"
-                  strokeWidth={isHover ? 2.8 : 2}
+                  strokeWidth={isHover ? 3 : 2.2}
+                  strokeLinecap="round"
                   fill="none"
-                  opacity={hovered === null ? 0.55 : isHover ? 1 : 0.18}
+                  opacity={hovered === null ? 0.6 : isHover ? 1 : 0.18}
                   className="animate-line-breathe transition-all duration-500"
                   style={{ animationDelay: `${(it.x % 5) * 0.4}s` }}
                 />
                 <g>
-                  <rect x={mx - 40} y={my - 26} width={80} height={20} rx={10} fill="oklch(0.88 0.04 290)" />
-                  <text x={mx} y={my - 12} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 10, fontWeight: 500, fill: "oklch(0.45 0.13 285)" }}>
+                  <rect x={mx - 44} y={my - 28} width={88} height={22} rx={11} fill="oklch(0.88 0.04 290)" />
+                  <text x={mx} y={my - 13} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 500, fill: "oklch(0.45 0.13 285)" }}>
                     {badgeLabel}
                   </text>
                 </g>
@@ -198,36 +200,44 @@ export function DecisionMap({
             );
           })}
 
-          {/* Left pill connections */}
+          {/* Left pill connections — soft flowing curve */}
           {leftPills.map((it) => {
             const isHover = hovered === it.id;
             return (
               <path
                 key={"ll-" + it.id}
-                d={`M 195 ${it.y} Q 320 ${it.y}, ${CX - 170} ${CY + (it.y - CY) * 0.18}`}
+                d={`M 220 ${it.y} C 360 ${it.y}, ${CX - 320} ${CY + (it.y - CY) * 0.3}, ${CX - 220} ${CY + (it.y - CY) * 0.18}`}
                 stroke="oklch(0.55 0.13 285)"
-                strokeWidth={isHover ? 1.8 : 1}
+                strokeWidth={isHover ? 1.9 : 1.1}
+                strokeLinecap="round"
                 fill="none"
-                opacity={hovered === null ? 0.4 : isHover ? 0.95 : 0.1}
+                opacity={hovered === null ? 0.42 : isHover ? 0.95 : 0.1}
                 className="animate-line-breathe transition-all duration-500"
                 style={{ animationDelay: `${(it.y % 6) * 0.3}s` }}
               />
             );
           })}
-          {/* Right pill connections — dashed */}
+          {/* Right pill connections — slightly tangled wave (no dashes) */}
           {rightPills.map((it) => {
             const isHover = hovered === it.id;
+            const y = it.y;
+            const startX = W - 220;
+            const endX = CX + 220;
+            const midX1 = startX - 70;
+            const midX2 = startX - 180;
+            // small irregular bend on this curve to suggest a soft "obstacle"
+            const bend = (y % 60) - 30;
             return (
               <path
                 key={"rl-" + it.id}
-                d={`M ${W - 195} ${it.y} Q ${W - 320} ${it.y}, ${CX + 170} ${CY + (it.y - CY) * 0.18}`}
+                d={`M ${startX} ${y} C ${midX1} ${y + bend}, ${midX2} ${y - bend * 0.6}, ${endX} ${CY + (y - CY) * 0.18}`}
                 stroke="oklch(0.55 0.13 285)"
-                strokeWidth={isHover ? 1.8 : 1}
+                strokeWidth={isHover ? 1.9 : 1.1}
+                strokeLinecap="round"
                 fill="none"
-                strokeDasharray="4 5"
-                opacity={hovered === null ? 0.42 : isHover ? 0.95 : 0.1}
+                opacity={hovered === null ? 0.45 : isHover ? 0.95 : 0.12}
                 className="animate-line-breathe transition-all duration-500"
-                style={{ animationDelay: `${(it.y % 5) * 0.35}s` }}
+                style={{ animationDelay: `${(y % 5) * 0.35}s` }}
               />
             );
           })}
@@ -239,7 +249,11 @@ export function DecisionMap({
             const driftClass = idx === 0 ? "animate-float-a" : idx === 1 ? "animate-float-b" : "animate-float-c";
             const isHover = hovered === it.id;
             const isTop = it.importance >= 0.95;
-            const scale = isHover ? 1.07 : 1;
+            const scale = isHover ? 1.06 : 1;
+            // text sized relative to bubble radius; bigger bubbles get bigger text
+            const labelSize = Math.round(it.r * 0.3); // ~30 for r=100, ~32 for r=108
+            // wrap long labels into 2 lines
+            const wrapped = wrapLabel(it.label, Math.max(12, Math.floor(it.r / 5)));
             return (
               <g
                 key={it.id}
@@ -263,26 +277,27 @@ export function DecisionMap({
                     <circle
                       cx={it.x}
                       cy={it.y}
-                      r={it.r + 38}
+                      r={it.r + 46}
                       fill={auraGrad}
                       opacity={isHover ? 0.95 : 0.55}
                       style={{ transition: "opacity 400ms ease" }}
                     />
-                    <circle cx={it.x} cy={it.y} r={it.r + 8} fill={grad} opacity="0.35" />
+                    <circle cx={it.x} cy={it.y} r={it.r + 10} fill={grad} opacity="0.35" />
                     <circle
                       cx={it.x}
                       cy={it.y}
                       r={it.r}
                       fill={grad}
                       stroke="oklch(0.45 0.13 285)"
-                      strokeWidth={isHover ? 1.8 : 1.1}
+                      strokeWidth={isHover ? 1.8 : 1.2}
                       style={{ transition: "stroke-width 300ms ease" }}
                     />
                   </g>
                 </g>
                 {/* Text layer — static, never animated */}
                 <g style={{ pointerEvents: "none" }}>
-                  <g transform={`translate(${it.x}, ${it.y - 36})`} opacity="0.78">
+                  {/* tiny icon */}
+                  <g transform={`translate(${it.x}, ${it.y - it.r * 0.5})`} opacity="0.7">
                     {it.type === "value" ? (
                       <path d="M 0 -7 L 2.5 -2 L 8 -2 L 3.8 1.5 L 5.5 7 L 0 3.5 L -5.5 7 L -3.8 1.5 L -8 -2 L -2.5 -2 Z" fill="oklch(0.45 0.13 285)" />
                     ) : (
@@ -293,27 +308,35 @@ export function DecisionMap({
                       </g>
                     )}
                   </g>
+                  {/* wrapped label, vertically centered */}
                   <text
                     x={it.x}
-                    y={it.y + 4}
                     textAnchor="middle"
                     style={{
                       fontFamily: "Fraunces, serif",
-                      fontSize: isTop ? 22 : 19,
+                      fontSize: isTop ? labelSize + 2 : labelSize,
                       fontWeight: isTop ? 600 : 500,
                       fill: "oklch(0.22 0.07 275)",
-                      letterSpacing: "-0.01em",
+                      letterSpacing: "-0.015em",
                     }}
                   >
-                    {clip(it.label, 16)}
+                    {wrapped.map((line: string, i: number) => (
+                      <tspan
+                        key={i}
+                        x={it.x}
+                        y={it.y + (i - (wrapped.length - 1) / 2) * (labelSize + 4) + 6}
+                      >
+                        {line}
+                      </tspan>
+                    ))}
                   </text>
                   <text
                     x={it.x}
-                    y={it.y + 28}
+                    y={it.y + it.r * 0.55}
                     textAnchor="middle"
                     style={{
                       fontFamily: "Inter, sans-serif",
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: 500,
                       fill: "oklch(0.5 0.05 285)",
                       letterSpacing: 0.6,
@@ -334,7 +357,6 @@ export function DecisionMap({
               x={it.x}
               y={it.y}
               label={it.label}
-              dashed={false}
               hovered={hovered === it.id}
               delay={i * 0.6}
               onEnter={() => setHovered(it.id)}
@@ -348,7 +370,6 @@ export function DecisionMap({
               x={it.x}
               y={it.y}
               label={it.label}
-              dashed
               hovered={hovered === it.id}
               delay={i * 0.6 + 0.3}
               onEnter={() => setHovered(it.id)}
@@ -357,48 +378,48 @@ export function DecisionMap({
             />
           ))}
 
-          {/* Center organic decision blob — shape breathes, text stays static */}
+          {/* Center organic decision blob — larger, shape breathes, text stays static */}
           <g>
             <g className="animate-float-soft" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
               <path
-                d={`M ${CX - 175} ${CY}
-                    C ${CX - 175} ${CY - 85}, ${CX - 95} ${CY - 100}, ${CX - 10} ${CY - 95}
-                    C ${CX + 105} ${CY - 90}, ${CX + 175} ${CY - 65}, ${CX + 175} ${CY + 5}
-                    C ${CX + 175} ${CY + 85}, ${CX + 85} ${CY + 100}, ${CX} ${CY + 95}
-                    C ${CX - 95} ${CY + 90}, ${CX - 175} ${CY + 75}, ${CX - 175} ${CY} Z`}
+                d={`M ${CX - 230} ${CY - 10}
+                    C ${CX - 230} ${CY - 120}, ${CX - 130} ${CY - 140}, ${CX - 20} ${CY - 130}
+                    C ${CX + 130} ${CY - 120}, ${CX + 230} ${CY - 90}, ${CX + 230} ${CY + 5}
+                    C ${CX + 230} ${CY + 115}, ${CX + 110} ${CY + 140}, ${CX} ${CY + 132}
+                    C ${CX - 120} ${CY + 124}, ${CX - 230} ${CY + 100}, ${CX - 230} ${CY - 10} Z`}
                 fill="url(#center-fill)"
                 stroke="oklch(0.45 0.13 285)"
-                strokeWidth="1.6"
+                strokeWidth="1.8"
               />
             </g>
             <g style={{ pointerEvents: "none" }}>
               <text
                 x={CX}
-                y={CY - 64}
+                y={CY - 92}
                 textAnchor="middle"
                 style={{
                   fontFamily: "Inter, sans-serif",
-                  fontSize: 10,
+                  fontSize: 11,
                   fontWeight: 600,
                   fill: "oklch(0.55 0.1 285)",
-                  letterSpacing: 2,
+                  letterSpacing: 2.4,
                 }}
               >
                 SINU OTSUS
               </text>
-              <foreignObject x={CX - 158} y={CY - 50} width={316} height={130}>
-                <div className="flex h-full w-full items-center justify-center px-2 text-center">
+              <foreignObject x={CX - 210} y={CY - 72} width={420} height={186}>
+                <div className="flex h-full w-full items-center justify-center px-3 text-center">
                   <p
                     style={{
                       fontFamily: "Fraunces, serif",
                       fontWeight: 600,
-                      fontSize: 26,
-                      lineHeight: 1.18,
-                      letterSpacing: "-0.015em",
+                      fontSize: centerFontSize(centerText),
+                      lineHeight: 1.14,
+                      letterSpacing: "-0.02em",
                       color: "oklch(0.22 0.07 275)",
                     }}
                   >
-                    {clip(centerText || "Sinu otsus", 90)}
+                    {clip(centerText || "Sinu otsus", 140)}
                   </p>
                 </div>
               </foreignObject>
@@ -406,6 +427,8 @@ export function DecisionMap({
           </g>
         </svg>
       </div>
+
+
 
 
       {/* Soovitatav järgmine samm — below the map */}
@@ -452,13 +475,13 @@ export function DecisionMap({
 }
 
 function PillButton({
-  x, y, label, dashed, hovered, onEnter, onLeave, onClick,
+  x, y, label, hovered, onEnter, onLeave, onClick,
 }: {
-  x: number; y: number; label: string; dashed: boolean; hovered: boolean; delay?: number;
+  x: number; y: number; label: string; hovered: boolean; delay?: number;
   onEnter: () => void; onLeave: () => void; onClick: () => void;
 }) {
-  const text = clip(label, 22);
-  const width = Math.max(120, text.length * 7.4 + 38);
+  const text = clip(label, 24);
+  const width = Math.max(140, text.length * 8.4 + 44);
   return (
     <g
       onMouseEnter={onEnter}
@@ -476,37 +499,37 @@ function PillButton({
       >
         {hovered && (
           <rect
-            x={x - width / 2 - 8}
-            y={y - 28}
-            width={width + 16}
-            height={56}
-            rx={28}
+            x={x - width / 2 - 10}
+            y={y - 32}
+            width={width + 20}
+            height={64}
+            rx={32}
             fill="oklch(0.7 0.13 290)"
             opacity="0.18"
           />
         )}
         <rect
           x={x - width / 2}
-          y={y - 20}
+          y={y - 22}
           width={width}
-          height={40}
-          rx={20}
+          height={44}
+          rx={22}
           fill="oklch(1 0 0)"
           stroke={hovered ? "oklch(0.45 0.13 285)" : "oklch(0.62 0.11 290)"}
-          strokeWidth={hovered ? 1.6 : 1}
-          strokeDasharray={dashed ? "4 4" : undefined}
-          opacity={hovered ? 1 : 0.94}
+          strokeWidth={hovered ? 1.7 : 1.1}
+          opacity={hovered ? 1 : 0.95}
           style={{ transition: "stroke-width 200ms ease" }}
         />
         <text
           x={x}
-          y={y + 5}
+          y={y + 6}
           textAnchor="middle"
           style={{
             fontFamily: "Inter, sans-serif",
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: hovered ? 600 : 500,
             fill: "oklch(0.27 0.07 275)",
+            letterSpacing: "-0.005em",
           }}
         >
           {text}
@@ -515,6 +538,7 @@ function PillButton({
     </g>
   );
 }
+
 
 function DetailSheet({ item, onClose }: { item: MapItem; onClose: () => void }) {
   const isNext = item.type === "next";
@@ -604,6 +628,50 @@ function clip(s: string, n: number) {
   if (!s) return "";
   return s.length > n ? s.slice(0, n - 1).trim() + "…" : s;
 }
+
+// Greedy word-wrap into at most `maxLines` lines, fitting roughly `maxChars` per line.
+function wrapLabel(s: string, maxChars: number, maxLines = 2): string[] {
+  if (!s) return [""];
+  const words = s.trim().split(/\s+/);
+  if (words.length === 1) return [clip(words[0], maxChars + 4)];
+  const lines: string[] = [];
+  let cur = "";
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    const candidate = cur ? cur + " " + w : w;
+    if (candidate.length <= maxChars || !cur) {
+      cur = candidate;
+    } else {
+      lines.push(cur);
+      cur = w;
+      if (lines.length === maxLines) {
+        // overflow into last line + ellipsis with the rest joined
+        const rest = words.slice(i).join(" ");
+        let last = lines[lines.length - 1];
+        if ((last + " " + rest).length > maxChars + 3) {
+          last = clip(last + " " + rest, maxChars + 3);
+        } else {
+          last = last + " " + rest;
+        }
+        lines[lines.length - 1] = last;
+        return lines;
+      }
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+
+// Scale center decision text down for long sentences.
+function centerFontSize(s: string): number {
+  const len = (s || "").length;
+  if (len <= 40) return 32;
+  if (len <= 70) return 27;
+  if (len <= 110) return 22;
+  return 19;
+}
+
 
 // ---------- Helpers to map DecisionData → MapItems ----------
 
