@@ -629,6 +629,44 @@ function clip(s: string, n: number) {
   return s.length > n ? s.slice(0, n - 1).trim() + "…" : s;
 }
 
+// Greedy word-wrap into at most `maxLines` lines, fitting roughly `maxChars` per line.
+function wrapLabel(s: string, maxChars: number, maxLines = 2): string[] {
+  if (!s) return [""];
+  const words = s.trim().split(/\s+/);
+  const lines: string[] = [];
+  let cur = "";
+  for (const w of words) {
+    const candidate = cur ? cur + " " + w : w;
+    if (candidate.length <= maxChars || !cur) {
+      cur = candidate;
+    } else {
+      lines.push(cur);
+      cur = w;
+      if (lines.length === maxLines - 1) break;
+    }
+  }
+  // remaining words
+  const rest = words.slice(lines.join(" ").split(/\s+/).filter(Boolean).length).join(" ");
+  if (lines.length < maxLines) {
+    lines.push((cur && rest && !rest.startsWith(cur) ? rest : cur).trim());
+  } else if (rest) {
+    let last = lines[lines.length - 1] + " " + rest;
+    if (last.length > maxChars + 2) last = last.slice(0, maxChars + 1).trim() + "…";
+    lines[lines.length - 1] = last;
+  }
+  return lines.filter(Boolean);
+}
+
+// Scale center decision text down for long sentences.
+function centerFontSize(s: string): number {
+  const len = (s || "").length;
+  if (len <= 40) return 32;
+  if (len <= 70) return 27;
+  if (len <= 110) return 22;
+  return 19;
+}
+
+
 // ---------- Helpers to map DecisionData → MapItems ----------
 
 export function buildMapItems(d: DecisionData): MapItem[] {
