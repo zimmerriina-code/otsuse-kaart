@@ -475,13 +475,13 @@ export function DecisionMap({
 }
 
 function PillButton({
-  x, y, label, dashed, hovered, onEnter, onLeave, onClick,
+  x, y, label, hovered, onEnter, onLeave, onClick,
 }: {
-  x: number; y: number; label: string; dashed: boolean; hovered: boolean; delay?: number;
+  x: number; y: number; label: string; hovered: boolean; delay?: number;
   onEnter: () => void; onLeave: () => void; onClick: () => void;
 }) {
-  const text = clip(label, 22);
-  const width = Math.max(120, text.length * 7.4 + 38);
+  const text = clip(label, 24);
+  const width = Math.max(140, text.length * 8.4 + 44);
   return (
     <g
       onMouseEnter={onEnter}
@@ -499,37 +499,37 @@ function PillButton({
       >
         {hovered && (
           <rect
-            x={x - width / 2 - 8}
-            y={y - 28}
-            width={width + 16}
-            height={56}
-            rx={28}
+            x={x - width / 2 - 10}
+            y={y - 32}
+            width={width + 20}
+            height={64}
+            rx={32}
             fill="oklch(0.7 0.13 290)"
             opacity="0.18"
           />
         )}
         <rect
           x={x - width / 2}
-          y={y - 20}
+          y={y - 22}
           width={width}
-          height={40}
-          rx={20}
+          height={44}
+          rx={22}
           fill="oklch(1 0 0)"
           stroke={hovered ? "oklch(0.45 0.13 285)" : "oklch(0.62 0.11 290)"}
-          strokeWidth={hovered ? 1.6 : 1}
-          strokeDasharray={dashed ? "4 4" : undefined}
-          opacity={hovered ? 1 : 0.94}
+          strokeWidth={hovered ? 1.7 : 1.1}
+          opacity={hovered ? 1 : 0.95}
           style={{ transition: "stroke-width 200ms ease" }}
         />
         <text
           x={x}
-          y={y + 5}
+          y={y + 6}
           textAnchor="middle"
           style={{
             fontFamily: "Inter, sans-serif",
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: hovered ? 600 : 500,
             fill: "oklch(0.27 0.07 275)",
+            letterSpacing: "-0.005em",
           }}
         >
           {text}
@@ -538,6 +538,7 @@ function PillButton({
     </g>
   );
 }
+
 
 function DetailSheet({ item, onClose }: { item: MapItem; onClose: () => void }) {
   const isNext = item.type === "next";
