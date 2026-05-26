@@ -320,7 +320,7 @@ export function DecisionMap({
                       letterSpacing: "-0.015em",
                     }}
                   >
-                    {wrapped.map((line, i) => (
+                    {wrapped.map((line: string, i: number) => (
                       <tspan
                         key={i}
                         x={it.x}
