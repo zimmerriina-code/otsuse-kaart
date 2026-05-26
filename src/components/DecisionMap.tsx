@@ -101,37 +101,34 @@ export function DecisionMap({
   const arr = byType.motivation.slice(0, 4);
 
   const positions = [
-    { x: CX - 520, y: CY - 340 }, // üleval vasakul, aga keskele lähemal
-    { x: CX - 680, y: CY - 110 }, // vasakul keskmest kõrgemal
-    { x: CX - 520, y: CY + 300 }, // all vasakul
-    { x: CX - 690, y: CY + 120 }, // vasakul allpool
+    { x: CX - 260, y: CY - 300 },
+    { x: CX - 20,  y: CY - 390 },
+    { x: CX + 240, y: CY - 330 },
+    { x: CX + 470, y: CY - 255 },
   ];
 
   return arr.map((it, i) => ({
     ...it,
-    x: positions[i]?.x ?? CX - 600,
-    y: positions[i]?.y ?? CY - 250 + i * 160,
+    x: positions[i]?.x ?? CX,
+    y: positions[i]?.y ?? CY - 320,
     kind: "motivation",
   }));
-}, [byType, CX, CY]);
+}, [byType]);
 
-const rightPills = useMemo(() => {
-  const arr = byType.fear.slice(0, 4);
-
-  const positions = [
-    { x: CX + 520, y: CY - 340 }, // üleval paremal, aga keskele lähemal
-    { x: CX + 690, y: CY - 110 }, // paremal keskmest kõrgemal
-    { x: CX + 520, y: CY + 300 }, // all paremal
-    { x: CX + 690, y: CY + 120 }, // paremal allpool
+ const positions = [
+    { x: CX - 220, y: CY + 300 },
+    { x: CX + 40,  y: CY + 390 },
+    { x: CX + 310, y: CY + 330 },
+    { x: CX + 560, y: CY + 250 },
   ];
 
   return arr.map((it, i) => ({
     ...it,
-    x: positions[i]?.x ?? CX + 600,
-    y: positions[i]?.y ?? CY - 250 + i * 160,
+    x: positions[i]?.x ?? CX,
+    y: positions[i]?.y ?? CY + 320,
     kind: "fear",
   }));
-}, [byType, CX, CY]);
+}, [byType]);
 
   const handleClick = (it: MapItem) => {
     setOpened(it);
@@ -221,20 +218,20 @@ const rightPills = useMemo(() => {
           })}
 
           {/* Left pill connections — soft flowing curve */}
-          {leftPills.map((it) => {
+         {leftPills.map((it) => {
   const isHover = hovered === it.id;
 
-  const startX = CX - 250;
-  const startY = CY + (it.y - CY) * 0.22;
+  const startX = CX + (it.x - CX) * 0.22;
+  const startY = CY - 145;
 
-  const endX = it.x + 115;
-  const endY = it.y;
+  const endX = it.x;
+  const endY = it.y + 30;
 
-  const c1x = startX - 160;
-  const c1y = startY + (endY - startY) * 0.25;
+  const c1x = startX;
+  const c1y = startY - 90;
 
-  const c2x = endX + 120;
-  const c2y = endY;
+  const c2x = endX;
+  const c2y = endY + 90;
 
   return (
     <path
@@ -249,21 +246,22 @@ const rightPills = useMemo(() => {
     />
   );
 })}
+          
           {/* Right pill connections — slightly tangled wave (no dashes) */}
           {rightPills.map((it) => {
   const isHover = hovered === it.id;
 
-  const startX = CX + 250;
-  const startY = CY + (it.y - CY) * 0.22;
+  const startX = CX + (it.x - CX) * 0.22;
+  const startY = CY + 145;
 
-  const endX = it.x - 115;
-  const endY = it.y;
+  const endX = it.x;
+  const endY = it.y - 30;
 
-  const c1x = startX + 160;
-  const c1y = startY + (endY - startY) * 0.25;
+  const c1x = startX;
+  const c1y = startY + 90;
 
-  const c2x = endX - 120;
-  const c2y = endY;
+  const c2x = endX;
+  const c2y = endY - 90;
 
   return (
     <path
