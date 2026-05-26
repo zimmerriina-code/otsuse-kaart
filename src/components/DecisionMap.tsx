@@ -27,10 +27,10 @@ interface Props {
   onSelect?: (it: MapItem) => void;
 }
 
-const W = 1280;
-const H = 880;
-const CX = 640;
-const CY = 430;
+const W = 1500;
+const H = 980;
+const CX = 750;
+const CY = 480;
 
 export function DecisionMap({
   centerText,
@@ -56,10 +56,10 @@ export function DecisionMap({
   const mains = useMemo(() => {
     const arr = [...byType.value.slice(0, 2), ...byType.affected.slice(0, 1)];
     const positions = [
-      { x: CX - 430, y: CY - 210, r: 108 }, // top-left — biggest (most important)
-      { x: CX - 400, y: CY + 220, r: 94 },  // bottom-left
-      { x: CX + 440, y: CY - 30, r: 100 },  // right
-    ];
+  { x: CX - 480, y: CY - 250, r: 126 },
+  { x: CX - 470, y: CY + 285, r: 116 },
+  { x: CX + 490, y: CY - 20, r: 122 },
+];
     return arr.slice(0, 3).map((it, i) => ({
       ...it,
       x: positions[i].x,
@@ -71,24 +71,24 @@ export function DecisionMap({
 
   // Left column: motivations. Right column: fears (flowing, not dashed).
   const colPositions = (n: number) => {
-    if (n === 0) return [];
-    const startY = 230;
-    const endY = 720;
-    if (n === 1) return [(startY + endY) / 2];
-    const gap = (endY - startY) / (n - 1);
-    return Array.from({ length: n }, (_, i) => startY + i * gap);
-  };
+  if (n === 0) return [];
+  const startY = 150;
+  const endY = 830;
+  if (n === 1) return [(startY + endY) / 2];
+  const gap = (endY - startY) / (n - 1);
+  return Array.from({ length: n }, (_, i) => startY + i * gap);
+};
 
   const leftPills = useMemo(() => {
     const arr = byType.motivation.slice(0, 4);
     const ys = colPositions(arr.length);
-    return arr.map((it, i) => ({ ...it, x: 140, y: ys[i] }));
+    return arr.map((it, i) => ({ ...it, x: 160, y: ys[i] }));
   }, [byType]);
 
   const rightPills = useMemo(() => {
     const arr = byType.fear.slice(0, 4);
     const ys = colPositions(arr.length);
-    return arr.map((it, i) => ({ ...it, x: W - 140, y: ys[i] }));
+    return arr.map((it, i) => ({ ...it, x: W - 160, y: ys[i] }));
   }, [byType]);
 
   const handleClick = (it: MapItem) => {
@@ -148,21 +148,6 @@ export function DecisionMap({
           {/* Halo behind center — breathing aura, larger */}
           <ellipse cx={CX} cy={CY} rx={360} ry={220} fill="url(#halo)" className="animate-breathe-slow" />
 
-          {/* Section headers */}
-          {leftPills.length > 0 && (
-            <text x={140} y={165} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 600, fill: "oklch(0.5 0.05 285)", letterSpacing: 2 }}>
-              MIS TÕMBAB
-            </text>
-          )}
-          {rightPills.length > 0 && (
-            <g>
-              <rect x={W - 210} y={148} width={140} height={28} rx={14} fill="oklch(0.96 0.012 290)" stroke="oklch(0.78 0.07 285)" strokeWidth="0.9" />
-              <text x={W - 140} y={167} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 500, fill: "oklch(0.45 0.13 285)" }}>
-                võimalikud riskid
-              </text>
-            </g>
-          )}
-
           {/* Curved connections from center to main bubbles + "tugev mõju" badge */}
           {mains.map((it) => {
             const dx = it.x - CX;
@@ -177,7 +162,6 @@ export function DecisionMap({
             const mx = (x1 + x2) / 2;
             const my = (y1 + y2) / 2;
             const isHover = hovered === it.id;
-            const badgeLabel = it.importance >= 0.95 ? "tugev mõju" : "mõjutab";
             return (
               <g key={"ml-" + it.id}>
                 <path
@@ -190,12 +174,6 @@ export function DecisionMap({
                   className="animate-line-breathe transition-all duration-500"
                   style={{ animationDelay: `${(it.x % 5) * 0.4}s` }}
                 />
-                <g>
-                  <rect x={mx - 44} y={my - 28} width={88} height={22} rx={11} fill="oklch(0.88 0.04 290)" />
-                  <text x={mx} y={my - 13} textAnchor="middle" style={{ fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 500, fill: "oklch(0.45 0.13 285)" }}>
-                    {badgeLabel}
-                  </text>
-                </g>
               </g>
             );
           })}
@@ -382,11 +360,11 @@ export function DecisionMap({
           <g>
             <g className="animate-float-soft" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
               <path
-                d={`M ${CX - 230} ${CY - 10}
-                    C ${CX - 230} ${CY - 120}, ${CX - 130} ${CY - 140}, ${CX - 20} ${CY - 130}
-                    C ${CX + 130} ${CY - 120}, ${CX + 230} ${CY - 90}, ${CX + 230} ${CY + 5}
-                    C ${CX + 230} ${CY + 115}, ${CX + 110} ${CY + 140}, ${CX} ${CY + 132}
-                    C ${CX - 120} ${CY + 124}, ${CX - 230} ${CY + 100}, ${CX - 230} ${CY - 10} Z`}
+                d={`M ${CX - 270} ${CY - 10}
+    C ${CX - 270} ${CY - 140}, ${CX - 145} ${CY - 165}, ${CX - 20} ${CY - 155}
+    C ${CX + 150} ${CY - 145}, ${CX + 270} ${CY - 105}, ${CX + 270} ${CY + 8}
+    C ${CX + 270} ${CY + 135}, ${CX + 130} ${CY + 165}, ${CX} ${CY + 154}
+    C ${CX - 140} ${CY + 144}, ${CX - 270} ${CY + 120}, ${CX - 270} ${CY - 10} Z`}
                 fill="url(#center-fill)"
                 stroke="oklch(0.45 0.13 285)"
                 strokeWidth="1.8"
@@ -407,8 +385,8 @@ export function DecisionMap({
               >
                 SINU OTSUS
               </text>
-              <foreignObject x={CX - 210} y={CY - 72} width={420} height={186}>
-                <div className="flex h-full w-full items-center justify-center px-3 text-center">
+              <foreignObject x={CX - 245} y={CY - 92} width={490} height={230}>
+               <div className="flex h-full w-full items-center justify-center px-2 text-center">
                   <p
                     style={{
                       fontFamily: "Fraunces, serif",
@@ -480,8 +458,8 @@ function PillButton({
   x: number; y: number; label: string; hovered: boolean; delay?: number;
   onEnter: () => void; onLeave: () => void; onClick: () => void;
 }) {
-  const text = clip(label, 24);
-  const width = Math.max(140, text.length * 8.4 + 44);
+  const text = clip(label, 30);
+  const width = Math.max(170, text.length * 9.2 + 56);
   return (
     <g
       onMouseEnter={onEnter}
@@ -500,20 +478,20 @@ function PillButton({
         {hovered && (
           <rect
             x={x - width / 2 - 10}
-            y={y - 32}
+            y={y - 38}
             width={width + 20}
-            height={64}
-            rx={32}
+            height={76}
+            rx={38}
             fill="oklch(0.7 0.13 290)"
             opacity="0.18"
           />
         )}
         <rect
           x={x - width / 2}
-          y={y - 22}
+          y={y - 26}
           width={width}
-          height={44}
-          rx={22}
+          height={52}
+          rx={26}
           fill="oklch(1 0 0)"
           stroke={hovered ? "oklch(0.45 0.13 285)" : "oklch(0.62 0.11 290)"}
           strokeWidth={hovered ? 1.7 : 1.1}
@@ -522,11 +500,11 @@ function PillButton({
         />
         <text
           x={x}
-          y={y + 6}
+          y={y + 5}
           textAnchor="middle"
           style={{
             fontFamily: "Inter, sans-serif",
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: hovered ? 600 : 500,
             fill: "oklch(0.27 0.07 275)",
             letterSpacing: "-0.005em",
@@ -666,10 +644,10 @@ function wrapLabel(s: string, maxChars: number, maxLines = 2): string[] {
 // Scale center decision text down for long sentences.
 function centerFontSize(s: string): number {
   const len = (s || "").length;
-  if (len <= 40) return 32;
-  if (len <= 70) return 27;
-  if (len <= 110) return 22;
-  return 19;
+  if (len <= 40) return 40;
+  if (len <= 70) return 34;
+  if (len <= 110) return 28;
+  return 24;
 }
 
 
