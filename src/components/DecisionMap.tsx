@@ -73,18 +73,18 @@ export function DecisionMap({
   };
 
   return arr.slice(0, 3).map((it, i) => ({
-    ...it,
-    x: positions[i].x,
-    y: positions[i].y,
-    r: radiusForLabel(it.label, positions[i].r),
-    tone: positions[i].tone,
-    strength:
-      it.importance >= 0.95
-        ? "väga oluline"
-        : it.importance >= 0.78
-          ? "oluline"
-          : "puudutab",
-  }));
+  ...it,
+  x: positions[i].x,
+  y: positions[i].y,
+  r: radiusForLabel(it.label, positions[i].r),
+  strength:
+    it.importance >= 0.95
+      ? "väga oluline"
+      : it.importance >= 0.78
+        ? "oluline"
+        : "puudutab",
+}));
+    
 }, [byType]);
 
   // Left column: motivations. Right column: fears (flowing, not dashed).
@@ -387,32 +387,32 @@ const rightPills = useMemo(() => {
 
           {/* Side pills */}
           {leftPills.map((it, i) => (
-            <PillButton
-              key={it.id}
-              x={it.x}
-              y={it.y}
-              label={it.label}
-              kind={it.kind}
-              hovered={hovered === it.id}
-              delay={i * 0.6}
-              onEnter={() => setHovered(it.id)}
-              onLeave={() => setHovered(null)}
-              onClick={() => handleClick(it)}
-            />
+           <PillButton
+  key={it.id}
+  x={it.x}
+  y={it.y}
+  label={it.label}
+  kind={it.kind}
+  hovered={hovered === it.id}
+  delay={i * 0.6}
+  onEnter={() => setHovered(it.id)}
+  onLeave={() => setHovered(null)}
+  onClick={() => handleClick(it)}
+/>
           ))}
           {rightPills.map((it, i) => (
             <PillButton
-              key={it.id}
-              x={it.x}
-              y={it.y}
-              label={it.label}
-              kind={it.kind}
-              hovered={hovered === it.id}
-              delay={i * 0.6 + 0.3}
-              onEnter={() => setHovered(it.id)}
-              onLeave={() => setHovered(null)}
-              onClick={() => handleClick(it)}
-            />
+  key={it.id}
+  x={it.x}
+  y={it.y}
+  label={it.label}
+  kind={it.kind}
+  hovered={hovered === it.id}
+  delay={i * 0.6 + 0.3}
+  onEnter={() => setHovered(it.id)}
+  onLeave={() => setHovered(null)}
+  onClick={() => handleClick(it)}
+/>
           ))}
 
           {/* Center organic decision blob — larger, shape breathes, text stays static */}
@@ -449,7 +449,7 @@ const rightPills = useMemo(() => {
                   <p
                     style={{
                       fontFamily: "Fraunces, serif",
-                      fontWeight: 5900,
+                      fontWeight: 600,
                       fontSize: centerFontSize(centerText),
                       lineHeight: 1.14,
                       letterSpacing: "-0.02em",
@@ -512,29 +512,58 @@ const rightPills = useMemo(() => {
 }
 
 function PillButton({
- function PillButton({ x, y, label, hovered, onHover, onLeave, onClick, kind }: PillButtonProps) {
-  x: number; y: number; label: string; hovered: boolean; delay?: number;
-  onEnter: () => void; onLeave: () => void; onClick: () => void; kind?: "motivation" | "fear";;
+  x,
+  y,
+  label,
+  hovered,
+  delay,
+  kind,
+  onEnter,
+  onLeave,
+  onClick,
+}: {
+  x: number;
+  y: number;
+  label: string;
+  hovered: boolean;
+  delay?: number;
+  kind?: "motivation" | "fear";
+  onEnter: () => void;
+  onLeave: () => void;
+  onClick: () => void;
 }) {
   const text = clip(label, 30);
   const width = Math.max(230, text.length * 12 + 76);
+
   const isFear = kind === "fear";
-  const fill = isFear ? "oklch(0.94 0.03 240)" : "oklch(0.95 0.03 350)";
-  const stroke = isFear ? "oklch(0.72 0.07 245)" : "oklch(0.75 0.06 340)";
-  const textColor = "oklch(0.28 0.06 275)";
+
+  const fill = isFear
+    ? "oklch(0.94 0.03 240)"
+    : "oklch(0.96 0.035 350)";
+
+  const stroke = isFear
+    ? "oklch(0.72 0.07 245)"
+    : "oklch(0.76 0.06 340)";
+
+  const textColor = "oklch(0.27 0.07 275)";
+
   return (
     <g
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       onClick={onClick}
       className="cursor-pointer"
-      style={{ transformBox: "fill-box", transformOrigin: "center" }}
+      style={{
+        transformBox: "fill-box",
+        transformOrigin: "center",
+      }}
     >
       <g
         style={{
           transformOrigin: `${x}px ${y}px`,
           transform: hovered ? "scale(1.07)" : "scale(1)",
           transition: "transform 300ms cubic-bezier(.2,.7,.2,1)",
+          animationDelay: `${delay ?? 0}s`,
         }}
       >
         {hovered && (
@@ -544,33 +573,35 @@ function PillButton({
             width={width + 20}
             height={76}
             rx={38}
-            fill="oklch(0.7 0.13 290)"
+            fill={isFear ? "oklch(0.78 0.05 245)" : "oklch(0.82 0.05 340)"}
             opacity="0.18"
           />
         )}
+
         <rect
-          <rect
-            x={x - width / 2}
-            y={y - 30}
-            width={width}
-            height={60}
-            rx={30}
-            fill={fill}
-            stroke={stroke}
-            strokeWidth={1.8}
-          />
-          opacity={hovered ? 1 : 0.95}
-          style={{ fontFamily: "Inter, sans-serif", fontSize: 17, fontWeight: 500, fill: textColor }}
+          x={x - width / 2}
+          y={y - 30}
+          width={width}
+          height={60}
+          rx={30}
+          fill={fill}
+          stroke={stroke}
+          strokeWidth={hovered ? 2.2 : 1.6}
+          opacity={hovered ? 1 : 0.96}
+          style={{
+            transition: "stroke-width 200ms ease, opacity 200ms ease",
+          }}
         />
+
         <text
           x={x}
-          y={y + 5}
+          y={y + 7}
           textAnchor="middle"
           style={{
             fontFamily: "Inter, sans-serif",
-            fontSize: 22,
-            fontWeight: hovered ? 600 : 500,
-            fill: "oklch(0.27 0.07 275)",
+            fontSize: 19,
+            fontWeight: hovered ? 650 : 550,
+            fill: textColor,
             letterSpacing: "-0.005em",
           }}
         >
@@ -580,7 +611,6 @@ function PillButton({
     </g>
   );
 }
-
 
 function DetailSheet({ item, onClose }: { item: MapItem; onClose: () => void }) {
   const isNext = item.type === "next";
