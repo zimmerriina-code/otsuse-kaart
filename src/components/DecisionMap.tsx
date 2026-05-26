@@ -111,9 +111,12 @@ export function DecisionMap({
     ...it,
     x: positions[i]?.x ?? CX,
     y: positions[i]?.y ?? CY - 320,
-    kind: "motivation",
+    kind: "motivation" as const,
   }));
 }, [byType]);
+
+  const rightPills = useMemo(() => {
+  const arr = byType.fear.slice(0, 4);
 
  const positions = [
     { x: CX - 220, y: CY + 300 },
@@ -126,7 +129,7 @@ export function DecisionMap({
     ...it,
     x: positions[i]?.x ?? CX,
     y: positions[i]?.y ?? CY + 320,
-    kind: "fear",
+    kind: "fear" as const,
   }));
 }, [byType]);
 
