@@ -19,7 +19,7 @@ export function FlowingLines({ className, reduced = false }: Props) {
           stroke="#A59AF4"
           strokeWidth="2.2"
           strokeLinecap="round"
-          opacity="0.28"
+          opacity="0.24"
           fill="none"
         />
       </g>
@@ -29,9 +29,9 @@ export function FlowingLines({ className, reduced = false }: Props) {
         <path
           d="M -120 520 C 130 360, 320 690, 600 510 S 1040 330, 1320 590 S 1530 720, 1720 560"
           stroke="#4F46E5"
-          strokeWidth="5.2"
+          strokeWidth="5"
           strokeLinecap="round"
-          opacity="0.92"
+          opacity="0.82"
           fill="none"
         />
       </g>
@@ -41,9 +41,9 @@ export function FlowingLines({ className, reduced = false }: Props) {
         <path
           d="M -120 470 C 170 310, 390 590, 690 455 S 1140 320, 1720 590"
           stroke="#8B80F1"
-          strokeWidth="2.6"
+          strokeWidth="2.2"
           strokeLinecap="round"
-          opacity="0.42"
+          opacity="0.52"
           fill="none"
         />
       </g>
@@ -53,7 +53,7 @@ export function FlowingLines({ className, reduced = false }: Props) {
         <path
           d="M -120 700 C 130 560, 340 820, 650 715 S 1120 530, 1720 720"
           stroke="#8E82F0"
-          strokeWidth="2.4"
+          strokeWidth="2.6"
           strokeLinecap="round"
           opacity="0.3"
           fill="none"
